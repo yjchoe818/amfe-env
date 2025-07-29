@@ -12,11 +12,9 @@ var key = args[0];
 var value;
 
 try {
-    value = eval('(pkg.' + key + ')');
+    value = pkg[key]; // Safely access the property using bracket notation
     process.stdout.write(value || '');
 } catch(e) {
     process.stdout.write('');
     process.exit(1);
 }
-
-
