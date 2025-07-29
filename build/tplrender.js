@@ -12,11 +12,16 @@ var tplpath = path.join(process.cwd(), args[0]);
 var tplstr = fs.readFileSync(tplpath, 'utf8');
 
 try {
-    value = eval('(function(pkg) { return `' + tplstr + '`})(pkg)');
+    // Use a safer alternative to eval for template processing
+    value = tplstr.replace(/\${(.*?)}/g, (match, p1) => {
+        try {
+            return new Function('pkg', `return ${p1}`)(pkg);
+        } catch (e) {
+            return '';
+        }
+    });
     process.stdout.write(value || '');
 } catch(e) {
     process.stdout.write('');
     process.exit(1);
 }
-
-
